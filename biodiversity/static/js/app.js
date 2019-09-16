@@ -1,18 +1,3 @@
-// @TODO: Complete the following function that builds the metadata panel
-// Use `d3.json` to fetch the metadata for a sample
-// Use d3 to select the panel with id of `#sample-metadata`
-// Use `.html("") to clear any existing metadata
-// Use `Object.entries` to add each key and value pair to the panel
-// Hint: Inside the loop, you will need to use d3 to append new
-// tags for each key-value in the metadata.
-// BONUS: Build the Gauge Chart
-// buildGauge(data.WFREQ);
-// @TODO: Use `d3.json` to fetch the sample data for the plots
-// @TODO: Build a Bubble Chart using the sample data
-// @TODO: Build a Pie Chart
-// HINT: You will need to use slice() to grab the top 10 sample_values,
-// otu_ids, and labels (10 each).
-
 function buildMetadata(sample) {
   
   var url = "/metadata/${sample}";
@@ -53,7 +38,7 @@ function buildCharts(sample) {
 
     var b_text = data.otu_labels;
 
-    var trace1 = [{
+    var trace1 = {
 
       x: x_axis,
       
@@ -71,7 +56,7 @@ function buildCharts(sample) {
       
       }
     
-    }];
+    };
 
     var data = [trace1];
 
@@ -81,7 +66,7 @@ function buildCharts(sample) {
       
       x_axis: { title: "OTU IDS" },
 
-      y_axis: { title: "SAMPLE VALUES"}
+      y_axis: { title: "SAMPLE VALUES" }
 
     };
 
@@ -97,7 +82,7 @@ function buildCharts(sample) {
 
       var p_hover = data.otu_labels.slice(0,10);
 
-      var trace2 = [{
+      var trace2 = {
 
         values: p_values,
 
@@ -107,47 +92,58 @@ function buildCharts(sample) {
 
         type: "pie"
 
-      }];
+      };
 
       var data = [trace2];
 
       var layout = {
 
-        title: "PIE CHART",
+        title: "OTU PIE CHART",
 
       };
 
       Plotly.newPlot("pie", data, layout);
     
     });
+
+  });
   
   }
+  
+  function init() {
+    
+    var selector = d3.select("#selDataset");
+    
+    d3.json("/names").then((sampleNames) => {
+      
+      sampleNames.forEach((sample) => {
+        
+        selector
 
-function init() {
-  // Grab a reference to the dropdown select element
-  var selector = d3.select("#selDataset");
-
-  // Use the list of sample names to populate the select options
-  d3.json("/names").then((sampleNames) => {
-    sampleNames.forEach((sample) => {
-      selector
         .append("option")
+
         .text(sample)
+
         .property("value", sample);
+      
+      });
+      
+      const firstSample = sampleNames[0];
+      
+      buildCharts(firstSample);
+      
+      buildMetadata(firstSample);
+    
     });
-
-    // Use the first sample from the list to build the initial plots
-    const firstSample = sampleNames[0];
-    buildCharts(firstSample);
-    buildMetadata(firstSample);
-  });
-}
-
-function optionChanged(newSample) {
-  // Fetch new data each time a new sample is selected
-  buildCharts(newSample);
-  buildMetadata(newSample);
-}
-
-// Initialize the dashboard
-init();
+  
+  }
+  
+  function optionChanged(newSample) {
+    
+    buildCharts(newSample);
+    
+    buildMetadata(newSample);
+  
+  }
+  
+  init();
