@@ -7,6 +7,11 @@
 // tags for each key-value in the metadata.
 // BONUS: Build the Gauge Chart
 // buildGauge(data.WFREQ);
+// @TODO: Use `d3.json` to fetch the sample data for the plots
+// @TODO: Build a Bubble Chart using the sample data
+// @TODO: Build a Pie Chart
+// HINT: You will need to use slice() to grab the top 10 sample_values,
+// otu_ids, and labels (10 each).
 
 function buildMetadata(sample) {
   
@@ -14,13 +19,13 @@ function buildMetadata(sample) {
   
   d3.json(url).then(function(sample) {
     
-    var data = d3.select("#sample-metadata");
+    var sample_metadata = d3.select("#sample-metadata");
     
     d3.select("#sample-metadata").node().value = "";
     
     Object.entries(sample).forEach(function([key, value]) {
       
-      var row = data.append("panel-body");
+      var row = sample_metadata.append("panel-body");
       
       row.text("${key}: ${value}");
     
@@ -32,14 +37,91 @@ function buildMetadata(sample) {
 
 function buildCharts(sample) {
 
-  // @TODO: Use `d3.json` to fetch the sample data for the plots
+  var data_url = "/samples/${sample}";
 
-    // @TODO: Build a Bubble Chart using the sample data
+  // BUBBLE CHART
 
-    // @TODO: Build a Pie Chart
-    // HINT: You will need to use slice() to grab the top 10 sample_values,
-    // otu_ids, and labels (10 each).
-}
+  d3.json(data_url).then(function(data) {
+
+    var x_axis = data.otu_ids;
+    
+    var y_axis = data.sample_values;
+
+    var b_size = data.sample_values;
+
+    var b_color = data.otu_ids;
+
+    var b_text = data.otu_labels;
+
+    var trace1 = [{
+
+      x: x_axis,
+      
+      y: y_axis,
+      
+      mode: "markers",
+      
+      text: b_text,
+      
+      marker: {
+        
+        color: b_color,
+        
+        size: b_size
+      
+      }
+    
+    }];
+
+    var data = [trace1];
+
+    var layout = {
+
+      title: "BUBBLE PLOT",
+      
+      x_axis: { title: "OTU IDS" },
+
+      y_axis: { title: "SAMPLE VALUES"}
+
+    };
+
+    Plotly.newPlot("bubble", data, layout);
+
+    // PIE CHART
+
+    d3.json(data_url).then(function(data) {
+
+      var p_values = data.sample_values.slice(0,10);
+
+      var p_lables = data.otu_ids.slice(0,10);
+
+      var p_hover = data.otu_labels.slice(0,10);
+
+      var trace2 = [{
+
+        values: p_values,
+
+        labels: p_lables,
+
+        hovertext: p_hover,
+
+        type: "pie"
+
+      }];
+
+      var data = [trace2];
+
+      var layout = {
+
+        title: "PIE CHART",
+
+      };
+
+      Plotly.newPlot("pie", data, layout);
+    
+    });
+  
+  }
 
 function init() {
   // Grab a reference to the dropdown select element
