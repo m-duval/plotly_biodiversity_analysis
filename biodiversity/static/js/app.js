@@ -5,8 +5,6 @@ function buildMetadata(sample) {
   d3.json(url).then(function(sample) {
     
     var sample_metadata = d3.select(`#sample-metadata`);
-    
-    // d3.select("#sample-metadata").node().value = "";
 
     sample_metadata.html("");
     
