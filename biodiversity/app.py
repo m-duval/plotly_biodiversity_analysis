@@ -18,7 +18,7 @@ app = Flask(__name__)
 # Database Setup
 #################################################
 
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///db/bellybutton.sqlite"
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:data_visualization/plotly_biodiversity_analysis/biodiversity/db/bellybutton.sqlite"
 db = SQLAlchemy(app)
 
 # reflect an existing database into a new model
