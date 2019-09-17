@@ -1,18 +1,20 @@
 function buildMetadata(sample) {
   
-  var url = "/metadata/${sample}";
+  var url = `/metadata/${sample}`;
   
   d3.json(url).then(function(sample) {
     
-    var sample_metadata = d3.select("#sample-metadata");
+    var sample_metadata = d3.select(`#sample-metadata`);
     
-    d3.select("#sample-metadata").node().value = "";
+    // d3.select("#sample-metadata").node().value = "";
+
+    sample_metadata.html("");
     
     Object.entries(sample).forEach(function([key, value]) {
       
       var row = sample_metadata.append("panel-body");
       
-      row.text("${key}: ${value}");
+      row.text(`${key}: ${value}`);
     
     });
   
@@ -22,7 +24,7 @@ function buildMetadata(sample) {
 
 function buildCharts(sample) {
 
-  var data_url = "/samples/${sample}";
+  var data_url = `/samples/${sample}`;
 
   // BUBBLE CHART
 
@@ -38,7 +40,7 @@ function buildCharts(sample) {
 
     var b_text = data.otu_labels;
 
-    var trace1 = {
+    var bubble = {
 
       x: x_axis,
       
@@ -58,7 +60,7 @@ function buildCharts(sample) {
     
     };
 
-    var data = [trace1];
+    var data = [bubble];
 
     var layout = {
 
@@ -82,7 +84,7 @@ function buildCharts(sample) {
 
       var p_hover = data.otu_labels.slice(0,10);
 
-      var trace2 = {
+      var pie = {
 
         values: p_values,
 
@@ -94,7 +96,7 @@ function buildCharts(sample) {
 
       };
 
-      var data = [trace2];
+      var data = [pie];
 
       var layout = {
 
